@@ -10,12 +10,14 @@ THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.
 
 let
   loc = getCurrentDir() / "testencryptedfile.txt"
-  iv = generateIV()
-  encryptedContent = rawContent.encrypt(key, iv)
+  encryptedContent = rawContent.encrypt(key)
 
-assert rawContent == encryptedContent.decrypt(key, iv)
-
-encryptedContent.writeCryptFile(iv, loc)
-
-assert rawContent == loc.decrypt(key)
-loc.removeFile
+try:
+  assert rawContent == encryptedContent.decrypt(key)
+  loc.writeCryptFile(encryptedContent, key)
+  assert rawContent == loc.decryptFile(key)
+except:
+  raise getCurrentException()
+finally:
+  loc.removeFile
+  ("src" / "test").removeFile

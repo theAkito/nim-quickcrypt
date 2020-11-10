@@ -17,7 +17,8 @@ from streams import
   readAll,
   close,
   FileStream,
-  StringStream
+  StringStream,
+  peekStr
 from strutils import
   spaces,
   toHex,
@@ -36,30 +37,39 @@ proc ensureKeyLen(key: string) =
 proc generateIV*(ivAlphabet: string = ivAlphabet, ivLen: int = ivLen): string =
   ivAlphabet.generate(ivLen)
 
-proc encrypt*(raw_string, key, iv: string): string =
+proc encrypt*(raw_string, key: string): string =
   ensureKeyLen(key)
   var
     aes = initAES()
-    iv_t = iv
     adjusted_raw_string: string
   if aes.setEncodeKey(key):
     let
+      iv = generateIV()
       padding = (ivLen - (raw_string.len mod ivLen)) - 1
+    var
+      iv_t = iv
     adjusted_raw_string = padding.toHex()[^1] & raw_string & spaces(padding)
-    result = aes.encryptCBC(iv_t.cstring, adjusted_raw_string)
+    result = (iv & aes.encryptCBC(iv_t.cstring, adjusted_raw_string)).encode(true)
   else:
     result = ""
 
-proc decrypt*(raw_string, key, iv: string): string =
+proc decrypt*(raw_string, key: string): string =
   var
     aes = initAES()
-    iv_t = iv
     tailLen = 0
   if aes.setDecodeKey(key):
     let
-      result_raw = aes.decryptCBC(iv_t.cstring, raw_string)
-    tailLen = result_raw[0..0].parseHexInt()
-    result = result_raw[1..^1]
+      decoded_string = raw_string.decode()
+      f_strm = decoded_string.newStringStream()
+      iv = f_strm.readStr(16)
+    var
+      iv_t = iv
+    let
+      result_strm = aes.decryptCBC(iv_t.cstring, f_strm.readAll()).newStringStream()
+    tailLen = result_strm.readStr(1).parseHexInt()
+    result = result_strm.readAll()
+    f_strm.close()
+    result_strm.close()
     result.removeSuffix(spaces(tailLen))
   else:
     result = ""
@@ -74,27 +84,17 @@ proc readIV*(
   result = stream.readStr(ivLen)
   stream.close()
 
-proc decrypt*(
+proc decryptFile*(
   loc_file : string,
   key : string,
   ivLen    : int     = ivLen
 ): string =
   ensureKeyLen(key)
-  var
-    strm_content: StringStream
-    decodedFileContent: string
-    iv: string
-    enc_conf: string
-  decodedFileContent = loc_file.readFile().decode()
-  strm_content = decodedFileContent.newStringStream()
-  iv = strm_content.readStr(ivLen)
-  enc_conf = strm_content.readAll()
-  strm_content.close()
-  result = enc_conf.decrypt(key, iv)
+  result = loc_file.readFile().decrypt(key)
 
 proc writeCryptFile*(
-  conf         : string,
-  iv           : string,
-  loc_file     : string
+  loc_file     : string,
+  content      : string,
+  key          : string
 ): bool {.discardable.} =
-  writeFile(loc_file, encode(iv & conf, true))
+  writeFile(loc_file, content)
