@@ -6,25 +6,69 @@
 [![Liberapay patrons](https://img.shields.io/liberapay/patrons/Akito?style=plastic)](https://liberapay.com/Akito/)
 
 ## What
-This is a library for quickly and easily encrypting strings and Files.
+This is a [Nim](https://nim-lang.org/) library for quickly and easily encrypting strings and Files.
 
 ## Why
-Allows kickstarting new projects, without fiddling around with metadata basics.
+Use this library, if you want to quickly, easily and comfortably encrypt objects of interest. You don't have to deal with [Initialization Vectors](https://en.wikipedia.org/wiki/Initialization_vector), [block padding](https://security.stackexchange.com/questions/52111/how-to-encrypt-more-than-16-bytes-using-aes) or anything else stealing your focus from the actual business logic in your application. This library gives you the benefits of advanced encryption, without needing you to fiddle around with the disadvantages.
+That said, if you want absolute security, you should use an alternative, that lets you do the dirty work, but in turn makes the result more secure. However, this library covers probably 80% of use-cases out there: you need something secured from normal hackers, your colleagues at work or your security interested friend, but you don't expect real experts to be interested in your secrets.
 
 ## How
-Select this is a template, when creating a new Git repository through a Git WebUI
+### Install
+```
+nimble install quickcrypt
+```
+
+### Test
+```
+nimble test
+```
+
+### Use
+```nim
+import
+  quickcrypt,
+  os
+
+const
+  secretConfig = """{ "minchi": "punchi" }"""
+
+let
+  # Use your own key for increased security or
+  # quickly generate a not so secure key for convenience.
+  # The key length *must* equal 32 characters.
+  key = generateKey()
+  # Encrypt string.
+  encryptedConfig = secretConfig.encrypt(key)
+  # Decrypt string.
+  decryptedConfig = encryptedConfig.decrypt(key)
+  # Set path to config text file.
+  configTextFile = getCurrentDir() / "conf.txt"
+  # Set path to config binary file.
+  configBinFile = getCurrentDir() / "conf.bin"
+
+# Encrypt string and write to File.
+writeCryptFile(configTextFile, getsecretConfig, key)
+
+# Encrypt file.
+encryptFile(configBinFile, key)
+# Decrypt file and echo its content.
+echo decryptFile(configBinFile, key)
+```
 
 ## Where
-Git.
+* Linux
+* Windows
 
 ## Goals
-* Performance
+* Ease of Use
+* Quick Implementation
+* Comfortability
 
 ## Project Status
 Stable
 
 ## TODO
-* Always improve
+* Improve usage examples
 
 ## License
 Copyright (C) 2020  Akito <the@akito.ooo>
