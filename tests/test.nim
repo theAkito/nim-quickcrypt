@@ -14,10 +14,13 @@ let
 
 try:
   assert rawContent == encryptedContent.decrypt(key)
-  loc.writeCryptFile(encryptedContent, key)
+  loc.writeCryptFile(rawContent, key)
   assert rawContent == loc.decryptFile(key)
+  let orig_content = loc.readFile()
+  loc.encryptFile(key)
+  assert orig_content == loc.decryptFile(key)
 except:
   raise getCurrentException()
 finally:
   loc.removeFile
-  ("src" / "test").removeFile
+  ("tests" / "test").removeFile

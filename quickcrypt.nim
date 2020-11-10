@@ -97,4 +97,14 @@ proc writeCryptFile*(
   content      : string,
   key          : string
 ): bool {.discardable.} =
-  writeFile(loc_file, content)
+  let
+    enc_content = content.encrypt(key)
+  writeFile(loc_file, enc_content)
+
+proc encryptFile*(
+  loc_file     : string,
+  key          : string
+): bool {.discardable.} =
+  let
+    enc_content = loc_file.readFile().encrypt(key)
+  writeFile(loc_file, enc_content)
