@@ -13,18 +13,14 @@ from streams import
   openFileStream,
   newStringStream,
   readStr,
-  readChar,
   readAll,
   close,
   FileStream,
-  StringStream,
-  peekStr
+  StringStream
 from strutils import
   spaces,
   toHex,
-  removePrefix,
   removeSuffix,
-  parseInt,
   parseHexInt
 
 const
@@ -62,15 +58,13 @@ proc decrypt*(raw_string, key: string): string =
   if aes.setDecodeKey(key):
     let
       decoded_string = raw_string.decode()
-      f_strm = decoded_string.newStringStream()
-      iv = f_strm.readStr(16)
-    var
-      iv_t = iv
+      strm_decoded_string = decoded_string.newStringStream()
+      iv = strm_decoded_string.readStr(16)
     let
-      result_strm = aes.decryptCBC(iv_t.cstring, f_strm.readAll()).newStringStream()
+      result_strm = aes.decryptCBC(iv.cstring, strm_decoded_string.readAll()).newStringStream()
     tailLen = result_strm.readStr(1).parseHexInt()
     result = result_strm.readAll()
-    f_strm.close()
+    strm_decoded_string.close()
     result_strm.close()
     result.removeSuffix(spaces(tailLen))
   else:
@@ -99,6 +93,7 @@ proc writeCryptFile*(
   content      : string,
   key          : string
 ): bool {.discardable.} =
+  ensureKeyLen(key)
   let
     enc_content = content.encrypt(key)
   writeFile(loc_file, enc_content)
@@ -107,6 +102,7 @@ proc encryptFile*(
   loc_file     : string,
   key          : string
 ): bool {.discardable.} =
+  ensureKeyLen(key)
   let
     enc_content = loc_file.readFile().encrypt(key)
   writeFile(loc_file, enc_content)
