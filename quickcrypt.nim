@@ -19,7 +19,12 @@ from streams import
   FileStream,
   StringStream
 from strutils import
-  repeat
+  spaces,
+  toHex,
+  removePrefix,
+  removeSuffix,
+  parseInt,
+  parseHexInt
 
 const
   ivLen* = 16
@@ -29,20 +34,30 @@ proc generateIV*(ivAlphabet: string = ivAlphabet, ivLen: int = ivLen): string =
   ivAlphabet.generate(ivLen)
 
 proc encrypt*(raw_string, key, iv: string): string =
+  doAssert key.len == 32
   var
     aes = initAES()
-    conf: string
+    iv_t = iv
+    adjusted_raw_string: string
   if aes.setEncodeKey(key):
-    conf = raw_string & repeat(' ', ivLen - (raw_string.len mod ivLen))
-    result = aes.encryptCBC(iv.cstring, conf)
+    let
+      padding = (ivLen - (raw_string.len mod ivLen)) - 1
+    adjusted_raw_string = padding.toHex()[^1] & raw_string & spaces(padding)
+    result = aes.encryptCBC(iv_t.cstring, adjusted_raw_string)
   else:
     result = ""
 
-proc decrypt*(conf, key, iv: string): string =
+proc decrypt*(raw_string, key, iv: string): string =
   var
     aes = initAES()
+    iv_t = iv
+    tailLen = 0
   if aes.setDecodeKey(key):
-    result = aes.decryptCBC(iv.cstring, conf)
+    let
+      result_raw = aes.decryptCBC(iv_t.cstring, raw_string)
+    tailLen = result_raw[0..0].parseHexInt()
+    result = result_raw[1..^1]
+    result.removeSuffix(spaces(tailLen))
   else:
     result = ""
 
@@ -51,10 +66,10 @@ proc readIV*(
   ivLen    : int     = ivLen
 ): string =
   var
-    strm_enc_conf: FileStream
-  strm_enc_conf = openFileStream(loc_file)
-  result        = strm_enc_conf.readStr(ivLen)
-  strm_enc_conf.close()
+    stream: FileStream
+  stream = openFileStream(loc_file)
+  result = stream.readStr(ivLen)
+  stream.close()
 
 proc decrypt*(
   loc_file : string,
