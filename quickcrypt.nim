@@ -29,13 +29,15 @@ from strutils import
 
 const
   ivLen* = 16
-  ivAlphabet* = "ABCDEF1234567890"
 
 proc ensureKeyLen(key: string) =
   doAssert key.len == 32
 
-proc generateIV*(ivAlphabet: string = ivAlphabet, ivLen: int = ivLen): string =
-  ivAlphabet.generate(ivLen)
+proc generateKey*(): string =
+  generate(size = 32)
+
+proc generateIV*(ivLen: int = ivLen): string =
+  generate(size = ivLen)
 
 proc encrypt*(raw_string, key: string): string =
   ensureKeyLen(key)

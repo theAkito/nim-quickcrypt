@@ -10,9 +10,9 @@ skipFiles     = @["README.md"]
 
 # Dependencies
 
-requires "nim >= 1.4.0"
-requires "nimAES >= 0.1.2"
-requires "neoid  >= 0.3.0"
+requires "nim     >= 1.4.0"
+requires "nimAES  >= 0.1.2"
+requires "neoid   >= 0.3.0"
 
 
 # Tasks
