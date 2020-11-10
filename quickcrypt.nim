@@ -30,11 +30,14 @@ const
   ivLen* = 16
   ivAlphabet* = "ABCDEF1234567890"
 
+proc ensureKeyLen(key: string) =
+  doAssert key.len == 32
+
 proc generateIV*(ivAlphabet: string = ivAlphabet, ivLen: int = ivLen): string =
   ivAlphabet.generate(ivLen)
 
 proc encrypt*(raw_string, key, iv: string): string =
-  doAssert key.len == 32
+  ensureKeyLen(key)
   var
     aes = initAES()
     iv_t = iv
@@ -73,24 +76,21 @@ proc readIV*(
 
 proc decrypt*(
   loc_file : string,
-  key_file : string,
+  key : string,
   ivLen    : int     = ivLen
 ): string =
+  ensureKeyLen(key)
   var
-    strm_enc_conf: StringStream
-    strm_enc_conf_file: FileStream
-    tmp: string
+    strm_content: StringStream
+    decodedFileContent: string
     iv: string
     enc_conf: string
-  strm_enc_conf_file = openFileStream(loc_file)
-  tmp = strm_enc_conf_file.readAll().decode()
-  strm_enc_conf_file.close()
-  strm_enc_conf = tmp.newStringStream()
-  for c in 1..ivLen:
-    iv = iv & strm_enc_conf.readChar()
-  enc_conf = strm_enc_conf.readAll()
-  strm_enc_conf.close()
-  result = enc_conf.decrypt(key_file, iv)
+  decodedFileContent = loc_file.readFile().decode()
+  strm_content = decodedFileContent.newStringStream()
+  iv = strm_content.readStr(ivLen)
+  enc_conf = strm_content.readAll()
+  strm_content.close()
+  result = enc_conf.decrypt(key, iv)
 
 proc writeCryptFile*(
   conf         : string,
