@@ -18,4 +18,5 @@ nimblecache/
 htmldocs/
 *_[0-9][0-9]*.nims
 # Binaries and Temp Files
-nimpackage
+quickcrypt
+quickcrypt_debug
