@@ -6,7 +6,7 @@
 [![Liberapay patrons](https://img.shields.io/liberapay/patrons/Akito?style=plastic)](https://liberapay.com/Akito/)
 
 ## What
-This is a base template for App projects written in Nim.
+This is a library for quickly and easily encrypting strings and Files.
 
 ## Why
 Allows kickstarting new projects, without fiddling around with metadata basics.
