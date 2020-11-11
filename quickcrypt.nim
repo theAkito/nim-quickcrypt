@@ -24,13 +24,14 @@ from strutils import
   parseHexInt
 
 const
-  ivLen* = 16
+  ivLen*  = 16
+  keyLen* = 32
 
 proc ensureKeyLen(key: string) =
-  doAssert key.len == 32
+  doAssert key.len == keyLen
 
-proc generateKey*(): string =
-  generate(size = 32)
+proc generateKey*(keyLen: int = keyLen): string =
+  generate(size = keyLen)
 
 proc generateIV*(ivLen: int = ivLen): string =
   generate(size = ivLen)
@@ -60,7 +61,6 @@ proc decrypt*(raw_string, key: string): string =
       decoded_string = raw_string.decode()
       strm_decoded_string = decoded_string.newStringStream()
       iv = strm_decoded_string.readStr(16)
-    let
       result_strm = aes.decryptCBC(iv.cstring, strm_decoded_string.readAll()).newStringStream()
     tailLen = result_strm.readStr(1).parseHexInt()
     result = result_strm.readAll()
