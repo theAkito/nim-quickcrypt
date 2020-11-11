@@ -18,7 +18,7 @@ requires "neoid   >= 0.3.0"
 # Tasks
 
 task intro, "Initialize project. Run only once at first pull.":
-  exec "git submodule add https://github.com:theAkito/nim-tools.git tasks || true"
+  exec "git submodule add https://github.com/theAkito/nim-tools.git tasks || true"
   exec "git submodule update --init --recursive"
   exec "git submodule update --recursive --remote"
   exec "nimble configure"
