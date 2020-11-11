@@ -20,10 +20,10 @@ try:
   let orig_loc_file_text = loc_file_text.readFile()
   loc_file_text.encryptFile(key)
   assert orig_loc_file_text == loc_file_text.decryptFile(key)
-  let orig_loc_file_bin = loc_file_bin.readFile()
+  let orig_file_bin = loc_file_bin.readFile()
   encryptFile(loc_file_bin, key)
-  assert orig_loc_file_bin == loc_file_bin.decryptFile(key)
-  loc_file_bin.writeFile(orig_loc_file_bin)
+  assert orig_file_bin == loc_file_bin.decryptFile(key)
+  loc_file_bin.writeFile(orig_file_bin)
 except:
   raise getCurrentException()
 finally:
