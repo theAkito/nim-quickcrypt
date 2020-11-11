@@ -46,13 +46,22 @@ let
   # Set path to config binary file.
   configBinFile = getCurrentDir() / "conf.bin"
 
-# Encrypt string and write to File.
-writeCryptFile(configTextFile, getsecretConfig, key)
+# Echo the content of the now decrypted config file.
+echo decryptedConfig
+
+# Encrypt string and write to text File.
+writeCryptFile(configTextFile, secretConfig, key)
 
 # Encrypt file.
 encryptFile(configBinFile, key)
-# Decrypt file and echo its content.
-echo decryptFile(configBinFile, key)
+
+# Echo the encrypted file.
+# All encrypted content is base64 encoded, so no weird characters
+# or otherwise ugly and inconvenient representations.
+echo configBinFile.readFile()
+
+# Decrypt file and replace the encrypted file.
+configBinFile.writeFile(decryptFile(configBinFile, key))
 ```
 
 ## Where
@@ -63,12 +72,13 @@ echo decryptFile(configBinFile, key)
 * Ease of Use
 * Quick Implementation
 * Comfortability
+* General Compatability
 
 ## Project Status
 Stable
 
 ## TODO
-* Improve usage examples
+* ~~Improve usage examples~~
 
 ## License
 Copyright (C) 2020  Akito <the@akito.ooo>
