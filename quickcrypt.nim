@@ -30,13 +30,13 @@ const
 proc ensureKeyLen(key: string) =
   doAssert key.len == keyLen
 
-proc generateKey*(keyLen: int = keyLen): string =
+proc generateKey*(keyLen: int = keyLen): string {.gcsafe.} =
   generate(size = keyLen)
 
-proc generateIV*(ivLen: int = ivLen): string =
+proc generateIV*(ivLen: int = ivLen): string {.gcsafe.} =
   generate(size = ivLen)
 
-proc encrypt*(raw_string, key: string): string =
+proc encrypt*(raw_string, key: string): string {.gcsafe.} =
   ensureKeyLen(key)
   var
     aes = initAES()
@@ -52,7 +52,7 @@ proc encrypt*(raw_string, key: string): string =
   else:
     result = ""
 
-proc decrypt*(raw_string, key: string): string =
+proc decrypt*(raw_string, key: string): string {.gcsafe.} =
   var
     aes = initAES()
     tailLen = 0
@@ -73,7 +73,7 @@ proc decrypt*(raw_string, key: string): string =
 proc readIV*(
   loc_file : string,
   ivLen    : int     = ivLen
-): string =
+): string {.gcsafe.} =
   var
     stream: FileStream
   stream = openFileStream(loc_file)
@@ -84,7 +84,7 @@ proc decryptFile*(
   loc_file : string,
   key : string,
   ivLen    : int     = ivLen
-): string =
+): string {.gcsafe.} =
   ensureKeyLen(key)
   result = loc_file.readFile().decrypt(key)
 
@@ -92,7 +92,7 @@ proc writeCryptFile*(
   loc_file     : string,
   content      : string,
   key          : string
-): bool {.discardable.} =
+): bool {.discardable, gcsafe.} =
   ensureKeyLen(key)
   let
     enc_content = content.encrypt(key)
@@ -101,7 +101,7 @@ proc writeCryptFile*(
 proc encryptFile*(
   loc_file     : string,
   key          : string
-): bool {.discardable.} =
+): bool {.discardable, gcsafe.} =
   ensureKeyLen(key)
   let
     enc_content = loc_file.readFile().encrypt(key)

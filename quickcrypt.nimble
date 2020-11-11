@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.2"
+version       = "0.1.3"
 author        = "Akito <the@akito.ooo>"
 description   = "A library for quickly and easily encrypting strings and text file content."
 license       = "GPL-3.0-or-later"

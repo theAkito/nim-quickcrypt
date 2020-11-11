@@ -79,6 +79,7 @@ Stable
 
 ## TODO
 * ~~Improve usage examples~~
+* Add native Documentation
 
 ## License
 Copyright (C) 2020  Akito <the@akito.ooo>
