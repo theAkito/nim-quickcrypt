@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.3"
+version       = "0.1.4"
 author        = "Akito <the@akito.ooo>"
 description   = "A library for quickly and easily encrypting strings and text file content."
 license       = "GPL-3.0-or-later"
@@ -18,7 +18,7 @@ requires "neoid   >= 0.3.0"
 # Tasks
 
 task intro, "Initialize project. Run only once at first pull.":
-  exec "git submodule add git@github.com:theAkito/nim-tools.git tasks || true"
+  exec "git submodule add https://github.com:theAkito/nim-tools.git tasks || true"
   exec "git submodule update --init --recursive"
   exec "git submodule update --recursive --remote"
   exec "nimble configure"
