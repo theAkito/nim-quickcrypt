@@ -2,6 +2,8 @@
 
 [![Language](https://img.shields.io/badge/language-Nim-orange.svg?style=plastic)](https://nim-lang.org/)
 
+[![Build Status](https://drone.akito.ooo/api/badges/Akito/nim-quickcrypt/status.svg)](https://drone.akito.ooo/Akito/nim-quickcrypt)
+
 [![GitHub](https://img.shields.io/badge/license-GPL--3.0-informational?style=plastic)](https://www.gnu.org/licenses/gpl-3.0.txt)
 [![Liberapay patrons](https://img.shields.io/liberapay/patrons/Akito?style=plastic)](https://liberapay.com/Akito/)
 

@@ -42,6 +42,8 @@ task dbuild, "Debug Build project.":
             --out:quickcrypt_debug \
             quickcrypt
        """
+task test, "Test project.":
+  exec "nim c -r tests/test.nim"
 task makecfg, "Create nim.cfg for optimized builds.":
   exec "nim tasks/cfg_optimized.nims"
 task clean, "Removes nim.cfg.":
