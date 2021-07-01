@@ -82,7 +82,7 @@ proc readIV*(
 
 proc decryptFile*(
   loc_file : string,
-  key : string,
+  key      : string,
   ivLen    : int     = ivLen
 ): string {.gcsafe.} =
   ensureKeyLen(key)

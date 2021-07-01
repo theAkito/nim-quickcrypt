@@ -17,7 +17,15 @@ That said, if you want absolute security, you should use an alternative, that le
 ```
 nimble install quickcrypt
 ```
-
+### Develop
+After cloning the repository for the first time:
+```
+nimble intro
+```
+When starting to develop after a break:
+```
+nimble configure
+```
 ### Test
 ```
 nimble test
